@@ -28,9 +28,6 @@ class HashTable:
         self.nodeCount= 0
         self.loadFactor= 0
 
-    def calcLoad(self):
-      self.loadFactor= self.nodeCount/self.capacity
-
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
@@ -42,7 +39,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        pass
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -51,6 +48,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        load= self.get_num_slots()/self.capacity
+        self.loadFactor= load
+        return load
 
     def fnv1(self, key):
         """
