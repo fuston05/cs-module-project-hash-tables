@@ -25,6 +25,11 @@ class HashTable:
         # Your code here
         self.capacity= capacity
         self.storage= [None] * self.capacity
+        self.nodeCount= 0
+        self.loadFactor= 0
+
+    def calcLoad(self):
+      self.loadFactor= self.nodeCount/self.capacity
 
     def get_num_slots(self):
         """
