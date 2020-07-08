@@ -133,8 +133,8 @@ class HashTable:
                 return data
             else:
               # if there is a next node
-                data= cur.value
-                self.storage[i]= cur.next
+                data = cur.value
+                self.storage[i] = cur.next
                 cur.next = None
                 return data
         elif cur is not None and cur.next is not None:
@@ -182,6 +182,7 @@ class HashTable:
 
         # create a new array at *2 capacity
         newArr = [None] * new_capacity
+        # store ref to old array
         oldArr = self.storage
         # point HashTable to use the new array
         self.storage = newArr
@@ -191,9 +192,9 @@ class HashTable:
             if ele is not None:
                 # check if there's moren than 1 node
                 cur = ele
-                while cur:
+                while cur is not None:
                     self.put(cur.key, cur.value)
-                    cur = ele.next
+                    cur = cur.next
 
 
 if __name__ == "__main__":
@@ -201,32 +202,31 @@ if __name__ == "__main__":
 
     ht.put("line_1", "'Twas brillig, and the slithy toves")
     ht.put("line_2", "Did gyre and gimble in the wabe:")
-    # ht.put("line_2", "All mimsy were the borogoves,")
-    # ht.put("line_4", "And the mome raths outgrabe.")
-    # ht.put("line_5", '"Beware the Jabberwock, my son!')
-    # ht.put("line_6", "The jaws that bite, the claws that catch!")
-    # ht.put("line_7", "Beware the Jubjub bird, and shun")
-    # ht.put("line_8", 'The frumious Bandersnatch!"')
-    # ht.put("line_9", "He took his vorpal sword in hand;")
-    # ht.put("line_10", "Long time the manxome foe he sought--")
-    # ht.put("line_11", "So rested he by the Tumtum tree")
-    # ht.put("line_12", "And stood awhile in thought.")
+    ht.put("line_2", "All mimsy were the borogoves,")
+    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_5", '"Beware the Jabberwock, my son!')
+    ht.put("line_6", "The jaws that bite, the claws that catch!")
+    ht.put("line_7", "Beware the Jubjub bird, and shun")
+    ht.put("line_8", 'The frumious Bandersnatch!"')
+    ht.put("line_9", "He took his vorpal sword in hand;")
+    ht.put("line_10", "Long time the manxome foe he sought--")
+    ht.put("line_11", "So rested he by the Tumtum tree")
+    ht.put("line_12", "And stood awhile in thought.")
 
     print("")
     print(ht.get("line_1"))
 
     # for i in range(1, 9):
     #     print(ht.get(f"line_{i}"))
-    ht.delete("line_1")
-    ht.delete("line_2")
-    ht.delete("line_3")
+    # ht.delete("line_1")
+    # ht.delete("line_2")
+    # ht.delete("line_3")
 
     print("")
-    print(ht.get("line_3"))
 
     # # Test storing beyond capacity
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
     # # Test resizing
     old_capacity = ht.get_num_slots()
