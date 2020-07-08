@@ -143,6 +143,7 @@ class HashTable:
                 self.nodeCount -=1
                 cur.next = None
                 return data
+                
         elif cur is not None and cur.next is not None:
             cur = cur.next
 
