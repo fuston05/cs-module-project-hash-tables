@@ -23,6 +23,7 @@ class HashTable:
         # Your code here
         self.capacity = capacity
         self.storage = [None] * self.capacity
+        self.nodeCount = 0
 
     def get_num_slots(self):
         """
@@ -44,7 +45,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        load = self.get_num_slots()/self.capacity
+        load = self.nodeCount/self.capacity
         return load
 
     def fnv1(self, key):
@@ -89,13 +90,15 @@ class HashTable:
         """
         # Your code here
         # check loadFactor
-        # if self.get_load_factor() >= 0.7:
-        #   self.resize(self.capacity *2)
+        if self.get_load_factor() >= 0.7:
+            self.resize(self.capacity * 2)
+
         # get index
         i = self.hash_index(key)
         cur = self.storage[i]
         if cur == None:
             self.storage[i] = HashTableEntry(key, value)
+            self.nodeCount +=1
             return
 
         while cur is not None:
@@ -106,6 +109,7 @@ class HashTable:
                 cur = cur.next
             else:
                 cur.next = HashTableEntry(key, value)
+                self.nodeCount +=1
 
     def delete(self, key):
         """
@@ -130,11 +134,13 @@ class HashTable:
             if cur.next is None:
                 data = cur.value
                 self.storage[i] = None
+                self.nodeCount -=1
                 return data
             else:
               # if there is a next node
                 data = cur.value
                 self.storage[i] = cur.next
+                self.nodeCount -=1
                 cur.next = None
                 return data
         elif cur is not None and cur.next is not None:
@@ -144,6 +150,7 @@ class HashTable:
                 if cur.key == key:
                     prev.next = cur.next
                     cur.next = None
+                    self.nodeCount -=1
                     return cur.value
                 else:
                     prev = prev.next
@@ -186,6 +193,7 @@ class HashTable:
         oldArr = self.storage
         # point HashTable to use the new array
         self.storage = newArr
+        self.capacity= len(newArr)
         # loop through old array and 'put' each one back onto new array
         for ele in oldArr:
             # if empty, skip
@@ -229,14 +237,14 @@ if __name__ == "__main__":
     #     print(ht.get(f"line_{i}"))
 
     # # Test resizing
-    old_capacity = ht.get_num_slots()
-    ht.resize(ht.capacity * 2)
-    new_capacity = ht.get_num_slots()
+    # old_capacity = ht.get_num_slots()
+    # ht.resize(ht.capacity * 2)
+    # new_capacity = ht.get_num_slots()
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # # Test if data intact after resizing
-    for i in range(1, 13):
-        print(ht.get(f"line_{i}"))
+    # for i in range(1, 13):
+    #     print(ht.get(f"line_{i}"))
 
     print("")
