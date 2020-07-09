@@ -12,29 +12,17 @@ def f(x):
     return x * 4 + 6
 
 # Your code here
+left= {}
 
+right= {}
 
-def equalCombos(orderedNumSet):
-  pass
-  # iterate and store set into a dict?
+# loop through 'q' for left side(+)?
+  # run through f()
+  # add to left dict
+  
 
-  # returns a list of equal combos
-  # by checking through a dict to get equal combos stored?
+# f(1) + f(1) = f(12) - f(7)    10 + 10 = 54 - 34
+# compare left and right values
+answer= []
 
-
-# left side (addition)
-# list from L-R
-a = f(1) + f(3)
-
-# right side(subtraction)
-# list from R-L
-b = f(12) - f(7)
-
-# compare the sides
-if a == b:
-    pass
-
-if __name__ == '__main__':
-    print(equalCombos(q)
-
-    print("")
+print(answer)
