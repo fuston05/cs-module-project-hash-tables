@@ -14,7 +14,6 @@ def word_count(s):
         countedWords[word]= 1
       else:
         countedWords[word] +=1
-
     return countedWords
 
 
