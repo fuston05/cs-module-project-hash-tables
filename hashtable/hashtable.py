@@ -20,7 +20,9 @@ class HashTable:
     def __init__(self, capacity= MIN_CAPACITY):
       self.capacity= capacity
       self.nodeCount= 0
-      self.storage= [0] * self.capacity
+      self.storage= [None] * self.capacity
+      self.resizeCeil= 0.7
+      self.resizeFloor= 0.2
 
 
     def get_num_slots(self):
@@ -85,7 +87,47 @@ class HashTable:
 
         Implement this.
         """
-      
+        # check load factor and resize as needed
+        if self.get_load_factor() >= self.resizeCeil:
+          self.resize(self.capacity * 2)
+
+        # get index from hash
+        ind= self.hash_index(key)
+
+        # insert at index
+          # cases: 
+            # is key already there?
+              # if so, overwtite the value
+              # else: add to tail
+            # if index is empty (NONE)?
+              # add to head like  normal
+        # add next pointer to new node pointing at the old 'first node'
+        # increment the nodeCounter
+
+        # if that index is None
+        if self.storage[ind] == None:
+          self.storage[ind]= HashTableEntry(key, value)
+          print('\nnew node w empty ind: ', self.storage[ind].key, 'value: ', self.storage[ind].value, '\n')
+          self.nodeCount+= 1
+          return self.storage[ind].key
+        
+        # if there are already nodes at this index, check if key exists
+        else:
+          cur= self.storage[ind]
+          while cur != None:
+            # if key exists, overwrite it's value
+            if cur.key == key:
+              cur.value= value
+              return cur
+            else:
+              cur= cur.next
+          # if key doesn't exist, add it to tail
+          cur.next= HashTableEntry(key, value)
+          self.nodeCount+= 1
+          print('\nnew node: ', cur.next.key, 'value: ', cur.next.value, '\n')
+          return cur.next
+
+
 
     def delete(self, key):
         """
@@ -95,7 +137,6 @@ class HashTable:
 
         Implement this.
         """
-        
 
     def get(self, key):
         """
@@ -105,6 +146,21 @@ class HashTable:
 
         Implement this.
         """
+        # what if ind is empty(NONE)? return None
+        # search linked list for key
+          # if no key, return None
+          # else: return value
+
+        # get index
+        ind= self.hash_index(key)
+
+        cur= self.storage[ind]
+        while cur != None:
+          # if key exists
+          if cur.key == key:
+            return cur.value
+          cur= cur.next
+        return None
 
 
     def resize(self, new_capacity):
@@ -114,7 +170,7 @@ class HashTable:
 
         Implement this.
         """
-
+        print('\nRESIZE called to: ', new_capacity, '\n')
 
 
 if __name__ == "__main__":
@@ -123,22 +179,21 @@ if __name__ == "__main__":
     ht.put("line_1", "'Twas brillig, and the slithy toves")
     ht.put("line_2", "Did gyre and gimble in the wabe:")
     ht.put("line_2", "All mimsy were the borogoves,")
-    # ht.put("line_4", "And the mome raths outgrabe.")
-    # ht.put("line_5", '"Beware the Jabberwock, my son!')
-    # ht.put("line_6", "The jaws that bite, the claws that catch!")
-    # ht.put("line_7", "Beware the Jubjub bird, and shun")
-    # ht.put("line_8", 'The frumious Bandersnatch!"')
+    ht.put("line_4", "And the mome raths outgrabe.")
+    ht.put("line_5", '"Beware the Jabberwock, my son!')
+    ht.put("line_6", "The jaws that bite, the claws that catch!")
+    ht.put("line_7", "Beware the Jubjub bird, and shun")
+    ht.put("line_8", 'The frumious Bandersnatch!"')
     # ht.put("line_9", "He took his vorpal sword in hand;")
     # ht.put("line_10", "Long time the manxome foe he sought--")
     # ht.put("line_11", "So rested he by the Tumtum tree")
     # ht.put("line_12", "And stood awhile in thought.")
 
     print("")
-    print(ht.get("line_1"))
-    ht.get_load_factor()
+    # print(ht.get("line_1"))
 
-    # for i in range(1, 9):
-    #     print(ht.get(f"line_{i}"))
+    for i in range(1, MIN_CAPACITY+ 1):
+        print(ht.get(f"line_{i}"))
     # ht.delete("line_1")
     # ht.delete("line_2")
     # ht.delete("line_3")
