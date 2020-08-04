@@ -1,6 +1,5 @@
 class HashTableEntry:
     # Linked List hash table key/value pair
-
     def __init__(self, key, value, next=None):
         self.key = key
         self.value = value
@@ -18,8 +17,11 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity=MIN_CAPACITY):
-        # Your code here
+    def __init__(self, capacity= MIN_CAPACITY):
+      self.capacity= capacity
+      self.nodeCount= 0
+      self.storage= [0] * self.capacity
+
 
     def get_num_slots(self):
         """
@@ -31,7 +33,7 @@ class HashTable:
 
         Implement this.
         """
-
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -39,6 +41,9 @@ class HashTable:
 
         Implement this.
         """
+        print('load: ', self.nodeCount / self.capacity)
+        return self.nodeCount / self.capacity
+
 
     def fnv1(self, key):
         """
@@ -80,7 +85,7 @@ class HashTable:
 
         Implement this.
         """
-
+      
 
     def delete(self, key):
         """
@@ -118,18 +123,19 @@ if __name__ == "__main__":
     ht.put("line_1", "'Twas brillig, and the slithy toves")
     ht.put("line_2", "Did gyre and gimble in the wabe:")
     ht.put("line_2", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
+    # ht.put("line_4", "And the mome raths outgrabe.")
+    # ht.put("line_5", '"Beware the Jabberwock, my son!')
+    # ht.put("line_6", "The jaws that bite, the claws that catch!")
+    # ht.put("line_7", "Beware the Jubjub bird, and shun")
+    # ht.put("line_8", 'The frumious Bandersnatch!"')
+    # ht.put("line_9", "He took his vorpal sword in hand;")
+    # ht.put("line_10", "Long time the manxome foe he sought--")
+    # ht.put("line_11", "So rested he by the Tumtum tree")
+    # ht.put("line_12", "And stood awhile in thought.")
 
     print("")
     print(ht.get("line_1"))
+    ht.get_load_factor()
 
     # for i in range(1, 9):
     #     print(ht.get(f"line_{i}"))
