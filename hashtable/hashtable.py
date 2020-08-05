@@ -43,7 +43,7 @@ class HashTable:
 
         Implement this.
         """
-        print('load: ', self.nodeCount / self.capacity)
+        # print('load: ', self.nodeCount / self.capacity)
         return self.nodeCount / self.capacity
 
 
@@ -109,7 +109,7 @@ class HashTable:
           self.storage[ind]= HashTableEntry(key, value)
           print('\nnew node w empty ind: ', self.storage[ind].key, 'value: ', self.storage[ind].value, '\n')
           self.nodeCount+= 1
-          return self.storage[ind].key
+          # return self.storage[ind].key
         
         # if there are already nodes at this index, check if key exists
         else:
@@ -117,15 +117,18 @@ class HashTable:
           while cur != None:
             # if key exists, overwrite it's value
             if cur.key == key:
+              print('\nvalue overwritten: ', cur.key, 'value: ', cur.value, '\n')
               cur.value= value
-              return cur
-            else:
+              break
+            # if we're on the last node
+            elif cur.next != None:
               cur= cur.next
+            else:
+              break
           # if key doesn't exist, add it to tail
           cur.next= HashTableEntry(key, value)
           self.nodeCount+= 1
           print('\nnew node: ', cur.next.key, 'value: ', cur.next.value, '\n')
-          return cur.next
 
 
 
@@ -137,6 +140,49 @@ class HashTable:
 
         Implement this.
         """
+
+        # get index
+        ind= self.hash_index(key)
+        cur= self.storage[ind]
+        prev= self.storage[ind]
+
+        # if only one node?
+        if cur.next == None:
+          # set index slot to None
+          self.storage[ind]= None
+          # decrement nodeCounter
+          self.nodeCount-= 1
+          return
+
+        # if 1st node but not the ONLY node
+        elif cur.key == key:
+          self.storage[ind]= cur.next
+          self.nodeCount-= 1
+          return
+        else:
+          cur= cur.next
+        
+        # if more than one node:
+        while cur.next != None:
+        # if key matches any other node
+          if cur.key == key:
+            # set prev.next= cur.next
+            prev.next= cur.next
+            self.nodeCount-= 1
+            return
+          else:
+            cur= cur.next
+            prev= prev.next
+        
+        # if key not found:
+        print('Warning, key not found')
+
+        # check resize after delete
+        if self.get_load_factor() < self.resizeFloor:
+          if self.capacity // 2 <= self.resizeFloor:
+            self.resize(MIN_CAPACITY)
+          else: 
+            self.resize(self.capacity // 2)
 
     def get(self, key):
         """
@@ -170,7 +216,7 @@ class HashTable:
 
         Implement this.
         """
-        print('\nRESIZE called to: ', new_capacity, '\n')
+        # print('\nRESIZE called to: ', new_capacity, '\n')
 
 
 if __name__ == "__main__":
@@ -192,11 +238,18 @@ if __name__ == "__main__":
     print("")
     # print(ht.get("line_1"))
 
-    for i in range(1, MIN_CAPACITY+ 1):
-        print(ht.get(f"line_{i}"))
-    # ht.delete("line_1")
+    # for i in range(1, MIN_CAPACITY+ 1):
+    #     print(ht.get(f"line_{i}"))
+    
+    print("")
+    # ht.delete("line_2")
     # ht.delete("line_2")
     # ht.delete("line_3")
+    print("")
+    print("")
+
+    # for i in range(1, MIN_CAPACITY+ 1):
+    #     print(ht.get(f"line_{i}"))
 
     print("")
 
