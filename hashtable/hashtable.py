@@ -43,7 +43,6 @@ class HashTable:
 
         Implement this.
         """
-        # print('load: ', self.nodeCount / self.capacity)
         return self.nodeCount / self.capacity
 
 
@@ -107,7 +106,6 @@ class HashTable:
         # if that index is None
         if self.storage[ind] == None:
           self.storage[ind]= HashTableEntry(key, value)
-          print('\nnew node w empty ind: ', self.storage[ind].key, 'value: ', self.storage[ind].value, '\n')
           self.nodeCount+= 1
           # return self.storage[ind].key
         
@@ -117,7 +115,6 @@ class HashTable:
           while cur != None:
             # if key exists, overwrite it's value
             if cur.key == key:
-              print('\nvalue overwritten: ', cur.key, 'value: ', cur.value, '\n')
               cur.value= value
               break
             # if we're on the last node
@@ -128,7 +125,6 @@ class HashTable:
           # if key doesn't exist, add it to tail
           cur.next= HashTableEntry(key, value)
           self.nodeCount+= 1
-          print('\nnew node: ', cur.next.key, 'value: ', cur.next.value, '\n')
 
 
 
@@ -140,6 +136,11 @@ class HashTable:
 
         Implement this.
         """
+        # check resize before delete
+        if self.get_load_factor() <= self.resizeFloor:
+          self.resize(MIN_CAPACITY)
+        else:
+          self.resize(self.capacity // 2)
 
         # get index
         ind= self.hash_index(key)
@@ -163,26 +164,21 @@ class HashTable:
           cur= cur.next
         
         # if more than one node:
-        while cur.next != None:
+        while cur != None:
         # if key matches any other node
           if cur.key == key:
             # set prev.next= cur.next
             prev.next= cur.next
             self.nodeCount-= 1
             return
-          else:
+          elif cur.next != None:
             cur= cur.next
             prev= prev.next
+          else: break
         
         # if key not found:
         print('Warning, key not found')
 
-        # check resize after delete
-        if self.get_load_factor() < self.resizeFloor:
-          if self.capacity // 2 <= self.resizeFloor:
-            self.resize(MIN_CAPACITY)
-          else: 
-            self.resize(self.capacity // 2)
 
     def get(self, key):
         """
@@ -216,20 +212,40 @@ class HashTable:
 
         Implement this.
         """
-        # print('\nRESIZE called to: ', new_capacity, '\n')
+
+
+        # copy old list
+        oldArr= self.storage
+        # make new list of new_capacity size
+        newArr= [None] * new_capacity
+        # set self.storage to the new list
+        self.storage= newArr
+        self.capacity= len(newArr)
+
+        #loop through old list
+        for slot in oldArr:
+          if slot != None:
+            cur= slot
+            while cur:
+              self.put(cur.key, cur.value)
+              cur= cur.next
+
+        # then self.put each item into the new storage
+        # print('new cap: ', self.capacity)
+        # set new capacity
 
 
 if __name__ == "__main__":
-    ht = HashTable(8)
+    # ht = HashTable(8)
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
-    ht.put("line_2", "Did gyre and gimble in the wabe:")
-    ht.put("line_2", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
+    # ht.put("line_1", "'Twas brillig, and the slithy toves")
+    # ht.put("line_2", "Did gyre and gimble in the wabe:")
+    # ht.put("line_2", "All mimsy were the borogoves,")
+    # ht.put("line_4", "And the mome raths outgrabe.")
+    # ht.put("line_5", '"Beware the Jabberwock, my son!')
+    # ht.put("line_6", "The jaws that bite, the claws that catch!")
+    # ht.put("line_7", "Beware the Jubjub bird, and shun")
+    # ht.put("line_8", 'The frumious Bandersnatch!"')
     # ht.put("line_9", "He took his vorpal sword in hand;")
     # ht.put("line_10", "Long time the manxome foe he sought--")
     # ht.put("line_11", "So rested he by the Tumtum tree")
