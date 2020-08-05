@@ -1,20 +1,7 @@
 
 def word_count(s):
     countedWords= {}
-    # Your code here
-    bannedChars = {"\"": None, ":": None, ";": None, ",": None, ".": None, "-": None, "+": None, "=": None, "/": None, "\\": None, "|": None, "[": None, "]": None, "{": None, "}": None, "(": None, ")": None, "*": None, "^": None, "&": None}
-    s= s.lower().strip()
-    for letter in s:
-        if letter in bannedChars:
-            s= s.replace(letter, '')
-    s= s.split()
 
-    for word in s:
-      if word not in countedWords:
-        countedWords[word]= 1
-      else:
-        countedWords[word] +=1
-    return countedWords
 
 
 if __name__ == "__main__":
