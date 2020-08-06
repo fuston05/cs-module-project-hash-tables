@@ -18,12 +18,31 @@ def slowfun_too_slow(x, y):
 
     return v
 
-cache= {}
+
+cache = {}
+
 def slowfun(x, y):
     """
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
+    # this is not my code. i just pasted it to study and try to understand this problem. which i still do not.
+    v = 0
+    if v not in cache:
+
+        cache[v] = math.pow(x, y)
+        print(v)
+
+        cache[v] = math.factorial(v)
+        print(v)
+
+        cache[v] //= (x + y)
+        print(v)
+
+        cache[v] %= 982451653
+        print(v)
+
+    return cache[v]
 
 
 # Do not modify below this line!
