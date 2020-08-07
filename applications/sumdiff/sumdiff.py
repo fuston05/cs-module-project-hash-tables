@@ -10,18 +10,29 @@ q = (1, 3, 4, 7, 12)
 def f(x):
     return x * 4 + 6
 
-# Your code here
-left= {}
 
-right= {}
+# loop over original 
 
-# loop through 'q' for left side(+)?
-  # run through f()
-  # add to left dict
-  
+    
+    # find all possible combinations of 4
+    # on each combo of 4:
+        # every possible combo of 2 using the f(x)
+        # store the 2 numbers and the value after the addition or subtraction
 
-# f(1) + f(1) = f(12) - f(7)    10 + 10 = 54 - 34
-# compare left and right values
-answer= []
+    # repeat for subtraction side
+
+    # loop addition against subtraction dict's
+    # if a+b == c-d:
+    # build the following string output:
+        # f(1) + f(1) = f(12) - f(7)    10 + 10 = 54 - 34
+
+addition= {}
+
+
+subtraction= {}
+
+
+
+answer= ''
 
 print(answer)
