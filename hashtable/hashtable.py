@@ -1,6 +1,5 @@
 class HashTableEntry:
     # Linked List hash table key/value pair
-
     def __init__(self, key, value, next=None):
         self.key = key
         self.value = value
@@ -10,7 +9,6 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
-
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -19,11 +17,13 @@ class HashTable:
     Implement this.
     """
 
-    def __init__(self, capacity=MIN_CAPACITY):
-        # Your code here
-        self.capacity = capacity
-        self.storage = [None] * self.capacity
-        self.nodeCount = 0
+    def __init__(self, capacity= MIN_CAPACITY):
+      self.capacity= capacity
+      self.nodeCount= 0
+      self.storage= [None] * self.capacity
+      self.resizeCeil= 0.7
+      self.resizeFloor= 0.2
+
 
     def get_num_slots(self):
         """
@@ -35,8 +35,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        return len(self.storage)
+        return self.capacity
 
     def get_load_factor(self):
         """
@@ -44,9 +43,8 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        load = self.nodeCount/self.capacity
-        return load
+        return self.nodeCount / self.capacity
+
 
     def fnv1(self, key):
         """
@@ -88,28 +86,47 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        # check loadFactor
-        if self.get_load_factor() >= 0.7:
-            self.resize(self.capacity * 2)
+        # check load factor and resize as needed
+        if self.get_load_factor() >= self.resizeCeil:
+          self.resize(self.capacity * 2)
 
-        # get index
-        i = self.hash_index(key)
-        cur = self.storage[i]
-        if cur == None:
-            self.storage[i] = HashTableEntry(key, value)
-            self.nodeCount +=1
-            return
+        # get index from hash
+        ind= self.hash_index(key)
 
-        while cur is not None:
+        # insert at index
+          # cases: 
+            # is key already there?
+              # if so, overwtite the value
+              # else: add to tail
+            # if index is empty (NONE)?
+              # add to head like  normal
+        # add next pointer to new node pointing at the old 'first node'
+        # increment the nodeCounter
+
+        # if that index is None
+        if self.storage[ind] == None:
+          self.storage[ind]= HashTableEntry(key, value)
+          self.nodeCount+= 1
+          # return self.storage[ind].key
+        
+        # if there are already nodes at this index, check if key exists
+        else:
+          cur= self.storage[ind]
+          while cur != None:
+            # if key exists, overwrite it's value
             if cur.key == key:
-                cur.value = value
-                return
-            elif cur.next is not None:
-                cur = cur.next
+              cur.value= value
+              break
+            # if we're on the last node
+            elif cur.next != None:
+              cur= cur.next
             else:
-                cur.next = HashTableEntry(key, value)
-                self.nodeCount +=1
+              break
+          # if key doesn't exist, add it to tail
+          cur.next= HashTableEntry(key, value)
+          self.nodeCount+= 1
+
+
 
     def delete(self, key):
         """
@@ -119,45 +136,49 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # check resize before delete
+        if self.get_load_factor() <= self.resizeFloor:
+          self.resize(MIN_CAPACITY)
+        else:
+          self.resize(self.capacity // 2)
 
-        # get the key index
-        i = self.hash_index(key)
+        # get index
+        ind= self.hash_index(key)
+        cur= self.storage[ind]
+        prev= self.storage[ind]
 
-        # search through linked list and find key
-        cur = self.storage[i]
-        prev = self.storage[i]
-        # if key is the head
-        if cur is not None and cur.key == key:
-            # if it's the only value in slot
-            # set array slot to None
-            if cur.next is None:
-                data = cur.value
-                self.storage[i] = None
-                self.nodeCount -=1
-                return data
-            else:
-              # if there is a next node
-                data = cur.value
-                self.storage[i] = cur.next
-                self.nodeCount -=1
-                cur.next = None
-                return data
-                
-        elif cur is not None and cur.next is not None:
-            cur = cur.next
+        # if only one node?
+        if cur.next == None:
+          # set index slot to None
+          self.storage[ind]= None
+          # decrement nodeCounter
+          self.nodeCount-= 1
+          return
 
-            while cur is not None:
-                if cur.key == key:
-                    prev.next = cur.next
-                    cur.next = None
-                    self.nodeCount -=1
-                    return cur.value
-                else:
-                    prev = prev.next
-                    cur = cur.next
-        print('could not find that item.')
-        return None
+        # if 1st node but not the ONLY node
+        elif cur.key == key:
+          self.storage[ind]= cur.next
+          self.nodeCount-= 1
+          return
+        else:
+          cur= cur.next
+        
+        # if more than one node:
+        while cur != None:
+        # if key matches any other node
+          if cur.key == key:
+            # set prev.next= cur.next
+            prev.next= cur.next
+            self.nodeCount-= 1
+            return
+          elif cur.next != None:
+            cur= cur.next
+            prev= prev.next
+          else: break
+        
+        # if key not found:
+        print('Warning, key not found')
+
 
     def get(self, key):
         """
@@ -167,17 +188,22 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-        i = self.hash_index(key)
+        # what if ind is empty(NONE)? return None
+        # search linked list for key
+          # if no key, return None
+          # else: return value
 
-        cur = self.storage[i]
-        while cur is not None:
-            # check for a matching key
-            if cur.key == key:
-                return cur.value
-            else:
-                cur = cur.next
+        # get index
+        ind= self.hash_index(key)
+
+        cur= self.storage[ind]
+        while cur != None:
+          # if key exists
+          if cur.key == key:
+            return cur.value
+          cur= cur.next
         return None
+
 
     def resize(self, new_capacity):
         """
@@ -186,50 +212,60 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
 
-        # create a new array at *2 capacity
-        newArr = [None] * new_capacity
-        # store ref to old array
-        oldArr = self.storage
-        # point HashTable to use the new array
-        self.storage = newArr
+
+        # copy old list
+        oldArr= self.storage
+        # make new list of new_capacity size
+        newArr= [None] * new_capacity
+        # set self.storage to the new list
+        self.storage= newArr
         self.capacity= len(newArr)
-        # loop through old array and 'put' each one back onto new array
-        for ele in oldArr:
-            # if empty, skip
-            if ele is not None:
-                # check if there's moren than 1 node
-                cur = ele
-                while cur is not None:
-                    self.put(cur.key, cur.value)
-                    cur = cur.next
+
+        #loop through old list
+        for slot in oldArr:
+          if slot != None:
+            cur= slot
+            while cur:
+              self.put(cur.key, cur.value)
+              cur= cur.next
+
+        # then self.put each item into the new storage
+        # print('new cap: ', self.capacity)
+        # set new capacity
 
 
 if __name__ == "__main__":
-    ht = HashTable(8)
+    # ht = HashTable(8)
 
-    ht.put("line_1", "'Twas brillig, and the slithy toves")
-    ht.put("line_2", "Did gyre and gimble in the wabe:")
-    ht.put("line_2", "All mimsy were the borogoves,")
-    ht.put("line_4", "And the mome raths outgrabe.")
-    ht.put("line_5", '"Beware the Jabberwock, my son!')
-    ht.put("line_6", "The jaws that bite, the claws that catch!")
-    ht.put("line_7", "Beware the Jubjub bird, and shun")
-    ht.put("line_8", 'The frumious Bandersnatch!"')
-    ht.put("line_9", "He took his vorpal sword in hand;")
-    ht.put("line_10", "Long time the manxome foe he sought--")
-    ht.put("line_11", "So rested he by the Tumtum tree")
-    ht.put("line_12", "And stood awhile in thought.")
+    # ht.put("line_1", "'Twas brillig, and the slithy toves")
+    # ht.put("line_2", "Did gyre and gimble in the wabe:")
+    # ht.put("line_2", "All mimsy were the borogoves,")
+    # ht.put("line_4", "And the mome raths outgrabe.")
+    # ht.put("line_5", '"Beware the Jabberwock, my son!')
+    # ht.put("line_6", "The jaws that bite, the claws that catch!")
+    # ht.put("line_7", "Beware the Jubjub bird, and shun")
+    # ht.put("line_8", 'The frumious Bandersnatch!"')
+    # ht.put("line_9", "He took his vorpal sword in hand;")
+    # ht.put("line_10", "Long time the manxome foe he sought--")
+    # ht.put("line_11", "So rested he by the Tumtum tree")
+    # ht.put("line_12", "And stood awhile in thought.")
 
     print("")
-    print(ht.get("line_1"))
+    # print(ht.get("line_1"))
 
-    # for i in range(1, 9):
+    # for i in range(1, MIN_CAPACITY+ 1):
     #     print(ht.get(f"line_{i}"))
-    # ht.delete("line_1")
+    
+    print("")
+    # ht.delete("line_2")
     # ht.delete("line_2")
     # ht.delete("line_3")
+    print("")
+    print("")
+
+    # for i in range(1, MIN_CAPACITY+ 1):
+    #     print(ht.get(f"line_{i}"))
 
     print("")
 
